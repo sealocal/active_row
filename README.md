@@ -6,15 +6,11 @@ A Ruby class that holds some methods to that will perform CRUD operations on a s
 
 1. Clone the repo.
 
-2. Copy table.rb to yourclassname.rb.
+2. See `example.rb` for examples.
 
-        $ cp ./table.rb ./yourclassname.rb
+3. Replace `Tweet` with `YourClassName`, and `tweet` with `yourclassname`.
 
-3. Open yourclassname.rb in your favorite text editor and rename the Table class to YourClassName.
-
-4. Add a CSV file in the `./tables` directory.
+3. Add a CSV file in the `./tables` directory.
 
         $ mkdir ./tables
         $ touch ./tables/yourclassname.csv
-
-5. See `example.rb` for examples.
