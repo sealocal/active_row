@@ -1,8 +1,14 @@
-# First, follow the Installation instructions in the README.
-# Then, you can require the file by name.
-# Rename the class and file to Tweet, then you can utilize the class as shown below.
+require './table'
 
-require './tweet'
+class Tweet < Table
+
+end
+
+puts Table.table_name
+puts Table.new.table_name
+puts Tweet.table_name
+puts Tweet.new.table_name
+puts Tweet.table_directory
 
 # Build a new tweet and save it
 exit unless Tweet.new(id: 2, text: 'save a tweet!', username: 'sea_local').save
