@@ -1,56 +1,27 @@
 require 'csv'
+require './class_attribute'
 
 class Table
 
-  @csv_file_directory = "./tables/"
-  @csv_file_name = "#{self.name.downcase}s.csv"
-  @csv_file_path = "#{@csv_file_directory}#{@csv_file_name}"
   CONVERTERS = :all
 
-  def self.csv_file_directory
-    @csv_file_directory
+  class_attribute :table_name, :table_directory
+
+  def self.table_name
+    "#{self.name.downcase}s"
   end
 
-  def self.csv_file_name
-    @csv_file_name
+  def self.table_directory
+    "./tables/"
   end
 
-  def self.csv_file_path
-    @csv_file_path
-  end
-
-  def self.csv_file_directory=(directory)
-    @csv_file_directory = directory
-    @csv_file_path = "#{@csv_file_directory}#{@csv_file_name}"
-  end
-
-  def self.csv_file_name=(file_name)
-    @csv_file_name = file_name
-    @csv_file_path = "#{@csv_file_directory}#{@csv_file_name}"
-  end
-
-  def self.csv_file_path=(file_path)
-    file_path = file_path.split('/')
-    @csv_file_name = file_path.pop
-    @csv_file_directory = file_path.join('/')
-    @csv_file_path = "#{@csv_file_directory}#{@csv_file_name}"
-  end
-
-  def csv_file_directory
-    self.class.csv_file_directory
-  end
-
-  def csv_file_name
-    self.class.csv_file_name
-  end
-
-  def csv_file_path
-    self.class.csv_file_path
+  def self.table_path
+    "#{self.table_directory}#{self.table_name}"
   end
 
   # Returns self if a row is found and returns nil if no row is found
   def self.find(id = nil)
-    csv_table = CSV.table(@csv_file_path, converters: CONVERTERS)
+    csv_table = CSV.table(table_path, converters: CONVERTERS)
     csv_row = csv_table.find { |row| row.field(:id) == id }
     csv_row ? self.new(csv_row.to_hash) : nil
   end
@@ -63,7 +34,7 @@ class Table
     local_variables.each { |local| parameters << local unless [:parameters, :args].include? local }
     parameters.each { |param| args[param] = binding.local_variable_get(param) }
     args.reject! { |k, v| v == nil }
-    csv_table = CSV.table(@csv_file_path, converters: CONVERTERS)
+    csv_table = CSV.table(table_path, converters: CONVERTERS)
     # Find the row where values in the CSV::Row are
     # equal to the values of the attributes that were provided
     csv_row = csv_table.find { |row| row.values_at(*args.keys) == args.values}
@@ -81,7 +52,7 @@ class Table
   end
 
   def save
-    CSV.open(csv_file_path, 'a+') do |csv| # a+ => append to document
+    CSV.open(table_path, 'a+') do |csv| # a+ => append to document
       # concatenate an array of values [1, 'text', 'username']
       csv << CSV::Row.new(attributes.keys, attributes.values).fields
     end
@@ -95,7 +66,7 @@ class Table
     local_variables.each { |local| parameters << local unless [:parameters, :args].include? local }
     parameters.each { |param| args[param] = binding.local_variable_get(param) }
     args.reject! { |k, v| v == nil }
-    CSV.open(@csv_file_path, 'a+') do |csv| # a+ => append to document
+    CSV.open(table_path, 'a+') do |csv| # a+ => append to document
       # concatenate an array of values [1, 'text', 'username']
       csv << CSV::Row.new(args.keys, args.values).fields
     end
@@ -109,20 +80,20 @@ class Table
     local_variables.each { |local| parameters << local unless [:parameters, :args].include? local }
     parameters.each { |param| args[param] = binding.local_variable_get(param) }
     args.reject! { |k, v| v == nil }
-    csv_table = CSV.table(csv_file_path, converters: CONVERTERS)
+    csv_table = CSV.table(table_path, converters: CONVERTERS)
     old_row = csv_table.find { |row| row.field(:id) == id }
     new_row = CSV::Row.new(old_row.headers, old_row.fields)
 
     # Assign new values to the row by param name (which should be a field name)
     args.each { |k, v| new_row[k] = v }
     # Delete the old_row
-    csv_table = CSV.table(csv_file_path, converters: CONVERTERS)
+    csv_table = CSV.table(table_path, converters: CONVERTERS)
     csv_table.delete_if do |row|
       row == old_row
     end
     csv_table << new_row
     # Write the csv_table to a file, replacing the original
-    File.open(csv_file_path, 'w') do |f| # w => write-only
+    File.open(table_path, 'w') do |f| # w => write-only
       f.write(csv_table.to_csv)
     end
     # Note: AR returns true if successful, false if not.
@@ -132,26 +103,26 @@ class Table
   end
 
   def destroy
-    csv_table = CSV.table(csv_file_path, converters: CONVERTERS)
+    csv_table = CSV.table(table_path, converters: CONVERTERS)
     # Delete the row from the table if it is equivalent to the receiving instance.
     csv_table.delete_if do |row|
       row == CSV::Row.new(attributes.keys, attributes.values)
     end
 
     # Write the csv_table to a file, replacing the original
-    File.open(csv_file_path, 'w') do |f| # w => write-only
+    File.open(table_path, 'w') do |f| # w => write-only
       f.write(csv_table.to_csv)
     end
 
     # Get the file's contents and close it
-    file = File.open(csv_file_path, 'rb')
+    file = File.open(table_path, 'rb')
     contents = file.read
     file.close
 
     # If all rows but the header have been deleted...
     if contents.lines.count < 2
        # then ensure the headers are still there.
-       File.open(csv_file_path, 'w') do |f| # w => write-only
+       File.open(table_path, 'w') do |f| # w => write-only
         f.write(attributes.keys.map(&:to_s).join(','))
       end
     end
@@ -173,4 +144,3 @@ class Table
     attributes
   end
 end
-
