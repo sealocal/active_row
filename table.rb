@@ -5,7 +5,7 @@ class Table
 
   CONVERTERS = :all
 
-  class_attribute :table_name, :table_directory
+  class_attribute :table_name, :table_directory, :table_path
 
   def self.table_name
     "#{self.name.downcase}s"
@@ -16,7 +16,7 @@ class Table
   end
 
   def self.table_path
-    "#{self.table_directory}#{self.table_name}"
+    "#{self.table_directory}#{self.table_name}.csv"
   end
 
   # Returns self if a row is found and returns nil if no row is found

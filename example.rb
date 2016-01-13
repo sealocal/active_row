@@ -6,9 +6,18 @@ end
 
 puts Table.table_name
 puts Table.new.table_name
+puts Table.table_path
+puts Table.new.table_path
+puts Table.table_directory
+puts Table.new.table_directory
+
 puts Tweet.table_name
 puts Tweet.new.table_name
+puts Tweet.table_path
+puts Tweet.new.table_path
 puts Tweet.table_directory
+puts Tweet.new.table_directory
+
 
 # Build a new tweet and save it
 exit unless Tweet.new(id: 2, text: 'save a tweet!', username: 'sea_local').save
