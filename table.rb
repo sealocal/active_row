@@ -19,6 +19,8 @@ class Table
     "#{self.table_directory}#{self.table_name}.csv"
   end
 
+  # Accepts a value for the id field.
+  #
   # Returns self if a row is found and returns nil if no row is found
   def self.find(id = nil)
     csv_table = CSV.table(table_path, converters: CONVERTERS)
@@ -26,31 +28,20 @@ class Table
     csv_row ? self.new(csv_row.to_hash) : nil
   end
 
-  # Returns self if a row is found and returns nil if no row is found
-  def self.find_by(id: nil, text: nil, username: nil)
-    parameters, args = [], {}
-    # Copy the provided parameters from local_variables to parameters,
-    # explicitly excluding :parameters and :args from the parameters hash
-    local_variables.each { |local| parameters << local unless [:parameters, :args].include? local }
-    parameters.each { |param| args[param] = binding.local_variable_get(param) }
-    args.reject! { |k, v| v == nil }
+  # Accepts a hash. By convention, keys should be the names of attributes
+  # as defined in the CSV headers and the atrributes of the subclass.
+  # However, attributes names are not validated by this method.
+  #
+  # Returns self if a row is found and returns nil if no row is found.
+  def self.find_by(attr_hash)
     csv_table = CSV.table(table_path, converters: CONVERTERS)
     # Find the row where values in the CSV::Row are
     # equal to the values of the attributes that were provided
-    csv_row = csv_table.find { |row| row.values_at(*args.keys) == args.values}
+    csv_row = csv_table.find { |row| row.values_at(*attr_hash.keys) == attr_hash.values}
     csv_row ? self.new(csv_row.to_hash) : nil
   end
 
-  # These attributes must mach the CSV schema.
-  attr_accessor :id, :text, :username
-
-  # #new(text: 'hello world!')
-  def initialize(id: nil, text: nil, username: nil)
-    @id = id
-    @text = text
-    @username = username
-  end
-
+  # Returns true if row is successfully saved.
   def save
     CSV.open(table_path, 'a+') do |csv| # a+ => append to document
       # concatenate an array of values [1, 'text', 'username']
@@ -59,33 +50,33 @@ class Table
     true
   end
 
-  def self.create(id: nil, text: nil, username: nil)
-    parameters, args = [], {}
-    # Copy the provided parameters from local_variables to parameters,
-    # explicitly excluding :parameters and :args from the parameters hash
-    local_variables.each { |local| parameters << local unless [:parameters, :args].include? local }
-    parameters.each { |param| args[param] = binding.local_variable_get(param) }
-    args.reject! { |k, v| v == nil }
+  # Accepts a hash. By convention, keys should be the names of attributes
+  # as defined in the CSV headers and the atrributes of the subclass.
+  # However, attributes names are not validated by this method.
+  #
+  # Returns self if a row is successfully created.
+  def self.create(attr_hash)
     CSV.open(table_path, 'a+') do |csv| # a+ => append to document
       # concatenate an array of values [1, 'text', 'username']
-      csv << CSV::Row.new(args.keys, args.values).fields
+      csv << CSV::Row.new(attr_hash.keys, attr_hash.values).fields
     end
-    self.new(id: id, text: text, username: username)
+    self.new(attr_hash)
   end
 
-  def update(text: nil, username: nil)
-    parameters, args = [], {}
-    # Copy the provided parameters from local_variables to parameters,
-    # explicitly excluding :parameters and :args from the parameters hash
-    local_variables.each { |local| parameters << local unless [:parameters, :args].include? local }
-    parameters.each { |param| args[param] = binding.local_variable_get(param) }
-    args.reject! { |k, v| v == nil }
+  # Accepts a hash. By convention, keys should be the names of attributes
+  # as defined in the CSV headers and the atrributes of the subclass.
+  # However, attributes names are not validated by this method.
+  #
+  # Returns new_row as an instance of the subclass, or returns false.
+  def update(attr_hash)
+    # Prevent update of id field
+    attr_hash.reject! { |k, v| k == :id || k == "id" }
     csv_table = CSV.table(table_path, converters: CONVERTERS)
     old_row = csv_table.find { |row| row.field(:id) == id }
     new_row = CSV::Row.new(old_row.headers, old_row.fields)
 
     # Assign new values to the row by param name (which should be a field name)
-    args.each { |k, v| new_row[k] = v }
+    attr_hash.each { |k, v| new_row[k] = v }
     # Delete the old_row
     csv_table = CSV.table(table_path, converters: CONVERTERS)
     csv_table.delete_if do |row|

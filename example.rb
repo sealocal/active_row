@@ -1,7 +1,15 @@
 require './table'
 
 class Tweet < Table
+  # These attributes must mach the CSV schema.
+  attr_accessor :id, :text, :username
 
+  # #new(text: 'hello world!')
+  def initialize(id: nil, text: nil, username: nil)
+    @id = id
+    @text = text
+    @username = username
+  end
 end
 
 puts Table.table_name
@@ -17,6 +25,7 @@ puts Tweet.table_path
 puts Tweet.new.table_path
 puts Tweet.table_directory
 puts Tweet.new.table_directory
+puts Tweet.new.attributes
 
 
 # Build a new tweet and save it
