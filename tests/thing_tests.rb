@@ -68,6 +68,11 @@ class ThingTest
     thing.size == 996
   end
 
+  def test_not_save
+    thing = Thing.new(id: 5, name: 'thing_save', size: 996).save
+    thing.nil?
+  end
+
   def test_update
     thing = Thing.find_by(name: 'thing_save').update(name: 'thing_update')
     thing.is_a?(Thing) &&
@@ -101,6 +106,7 @@ output << (ThingTest.new.test_self_find_by ? '.' : 'F')
 output << (ThingTest.new.test_self_new ? '.' : 'F')
 output << (ThingTest.new.test_self_create ? '.' : 'F')
 output << (ThingTest.new.test_save ? '.' : 'F')
+output << (ThingTest.new.test_not_save ? '.' : 'F')
 output << (ThingTest.new.test_update ? '.' : 'F')
 output << (ThingTest.new.test_destroy ? '.' : 'F')
 output << (ThingTest.new.test_attributes ? '.' : 'F')

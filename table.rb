@@ -41,9 +41,10 @@ class Table
     csv_row ? self.new(csv_row.to_hash) : nil
   end
 
-  # Returns self if a row is successfully saved.
+  # Returns a new instance if the row is successfully saved.
   def save
-    self.class.create(self.attributes)
+    attr_hash = self.attributes
+    return !self.class.find_by(attr_hash) ? self.class.create(attr_hash) : nil
   end
 
   # Accepts a hash. By convention, keys should be the names of attributes
