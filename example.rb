@@ -29,10 +29,10 @@ puts Tweet.new.attributes
 
 
 # Build a new tweet and save it
-exit unless Tweet.new(id: 2, text: 'save a tweet!', username: 'sea_local').save
+exit unless Tweet.new(id: 1, text: 'save a tweet!', username: 'sea_local').save
 
 # Build a new tweet
-t = Tweet.new(id: 1, text: 'save another tweet!', username: 'sea_local')
+t = Tweet.new(id: 2, text: 'save another tweet!', username: 'sea_local')
 # Save it
 t.save
 p t
