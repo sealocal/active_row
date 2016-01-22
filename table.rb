@@ -41,13 +41,9 @@ class Table
     csv_row ? self.new(csv_row.to_hash) : nil
   end
 
-  # Returns true if row is successfully saved.
+  # Returns self if a row is successfully saved.
   def save
-    CSV.open(table_path, 'a+') do |csv| # a+ => append to document
-      # concatenate an array of values [1, 'text', 'username']
-      csv << CSV::Row.new(attributes.keys, attributes.values).fields
-    end
-    true
+    self.class.create(self.attributes)
   end
 
   # Accepts a hash. By convention, keys should be the names of attributes
