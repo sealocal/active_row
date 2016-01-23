@@ -1,5 +1,5 @@
 require 'csv'
-require './class_attribute'
+require_relative './class_attribute'
 
 class Table
 
@@ -41,10 +41,15 @@ class Table
     csv_row ? self.new(csv_row.to_hash) : nil
   end
 
-  # Returns a new instance if the row is successfully saved.
+  # Returns true if the row is successfully saved. (Otherwise, an error will have occurred).
   def save
     attr_hash = self.attributes
-    return !self.class.find_by(attr_hash) ? self.class.create(attr_hash) : nil
+    if self.class.find_by(attr_hash)
+      return false
+    else
+      self.class.create(attr_hash)
+      return true
+    end
   end
 
   # Accepts a hash. By convention, keys should be the names of attributes

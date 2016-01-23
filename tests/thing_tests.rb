@@ -60,17 +60,11 @@ class ThingTest
   end
 
   def test_save
-    thing = Thing.new(id: 5, name: 'thing_save', size: 996).save
-    thing.is_a?(Thing) &&
-    thing.attributes == { id: 5, name: 'thing_save', size: 996 } &&
-    thing.id == 5 &&
-    thing.name == 'thing_save' &&
-    thing.size == 996
+    Thing.new(id: 5, name: 'thing_save', size: 996).save
   end
 
   def test_not_save
-    thing = Thing.new(id: 5, name: 'thing_save', size: 996).save
-    thing.nil?
+    !Thing.new(id: 5, name: 'thing_save', size: 996).save
   end
 
   def test_update
