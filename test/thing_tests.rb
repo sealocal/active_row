@@ -1,6 +1,6 @@
 require '../table'
 
-class Thing < Table
+class Thing < ActiveCsv
   attr_accessor :id, :name, :size
 
   def initialize(id: nil, name: nil, size: nil)

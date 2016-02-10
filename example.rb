@@ -1,6 +1,6 @@
 require './table'
 
-class Tweet < Table
+class Tweet < ActiveCsv
   # These attributes must mach the CSV schema.
   attr_accessor :id, :text, :username
 
@@ -12,12 +12,12 @@ class Tweet < Table
   end
 end
 
-puts Table.table_name
-puts Table.new.table_name
-puts Table.table_path
-puts Table.new.table_path
-puts Table.table_directory
-puts Table.new.table_directory
+puts ActiveCsv.table_name
+puts ActiveCsv.new.table_name
+puts ActiveCsv.table_path
+puts ActiveCsv.new.table_path
+puts ActiveCsv.table_directory
+puts ActiveCsv.new.table_directory
 
 puts Tweet.table_name
 puts Tweet.new.table_name
