@@ -119,7 +119,7 @@ class Table
         f.write(attributes.keys.map(&:to_s).join(','))
       end
     end
-    self
+    self.freeze
   end
 
   # Returns a hash of the receiving's instance variables.
