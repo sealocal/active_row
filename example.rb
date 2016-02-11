@@ -1,4 +1,9 @@
-require './table'
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+  gem 'active_csv', '0.0.1'
+end
 
 class Tweet < ActiveCsv
   # These attributes must mach the CSV schema.
