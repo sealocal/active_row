@@ -1,6 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'active_csv'
-  s.version     = '1.0'
+  s.version     = '0.0.1'
+  s.licenses    = ['MIT']
   s.summary     = "active_csv"
   s.description = "Provides behavior similar to ActiveRecord, but stores records in a CSV."
   s.authors     = ["Nick Quaranto"]
