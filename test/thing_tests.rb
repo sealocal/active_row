@@ -1,6 +1,6 @@
-require '../table'
+require '../lib/active_row'
 
-class Thing < ActiveCsv
+class Thing < ActiveRow
   attr_accessor :id, :name, :size
 
   def initialize(id: nil, name: nil, size: nil)

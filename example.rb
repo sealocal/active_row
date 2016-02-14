@@ -2,10 +2,10 @@ require 'bundler/inline'
 
 gemfile do
   source 'https://rubygems.org'
-  gem 'active_csv', '0.0.1'
+  gem 'active_row', '0.0.1'
 end
 
-class Tweet < ActiveCsv
+class Tweet < ActiveRow
   # These attributes must mach the CSV schema.
   attr_accessor :id, :text, :username
 
@@ -17,12 +17,12 @@ class Tweet < ActiveCsv
   end
 end
 
-puts ActiveCsv.table_name
-puts ActiveCsv.new.table_name
-puts ActiveCsv.table_path
-puts ActiveCsv.new.table_path
-puts ActiveCsv.table_directory
-puts ActiveCsv.new.table_directory
+puts ActiveRow.table_name
+puts ActiveRow.new.table_name
+puts ActiveRow.table_path
+puts ActiveRow.new.table_path
+puts ActiveRow.table_directory
+puts ActiveRow.new.table_directory
 
 puts Tweet.table_name
 puts Tweet.new.table_name

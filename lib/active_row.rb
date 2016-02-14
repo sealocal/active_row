@@ -1,7 +1,7 @@
 require 'csv'
-require_relative 'active_csv/class_attribute'
+require_relative 'active_row/class_attribute'
 
-class ActiveCsv
+class ActiveRow
 
   CONVERTERS = :all
 
